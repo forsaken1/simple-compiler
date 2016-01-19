@@ -1,0 +1,264 @@
+# 
+# C expression rules (not complete)
+# 
+
+primary-expression
+    identifier
+    constant
+    string-literal
+    ( expression )
+
+postfix-expression
+    primary-expression
+  postfix_expression '(' ')'
+  postfix_expression '(' argument_expression_list ')'
+    postfix-expression [ expression ]
+    postfix-expression . identifier
+    postfix-expression -> identifier
+    postfix-expression ++
+    postfix-expression --
+
+argument-expression-list
+    assignment-expression
+    argument-expression-list , assignment-expression
+
+unary-expression
+    postfix-expression
+    ++ unary-expression
+    -- unary-expression
+    unary-operator cast-expression
+    sizeof unary-expression
+    sizeof ( type-name )
+
+unary-operator
+    &
+    *
+    +
+    -
+    ~
+    !
+
+cast-expression
+    unary-expression
+    ( type-name ) cast-expression
+  
+xchange-expression
+  cast-expression
+  xchange-expression <> cast-expression
+
+multiplicative-expression
+    xchange-expression
+    multiplicative-expression * xchange-expression
+    multiplicative-expression / xchange-expression
+    multiplicative-expression % xchange-expression
+
+additive-expression
+    multiplicative-expression
+    additive-expression + multiplicative-expression
+    additive-expression - multiplicative-expression
+
+shift-expression
+    additive-expression
+    shift-expression << additive-expression
+    shift-expression >> additive-expression
+
+relational-expression
+    shift-expression
+    relational-expression < shift-expression
+    relational-expression > shift-expression
+    relational-expression <= shift-expression
+    relational-expression >= shift-expression
+
+equality-expression
+    relational-expression
+    equality-expression == relational-expression
+    equality-expression != relational-expression
+
+AND-expression
+    equality-expression
+    AND-expression & equality-expression
+
+exclusive-OR-expression
+    AND-expression
+    exclusive-OR-expression ^ AND-expression
+
+inclusive-OR-expression
+    exclusive-OR-expression
+    inclusive-OR-expression | exclusive-OR-expression
+
+logical-AND-expression
+    inclusive-OR-expression
+    logical-AND-expression && inclusive-OR-expression
+
+logical-OR-expression
+    logical-AND-expression
+    logical-OR-expression || logical-AND-expression
+
+conditional-expression
+    logical-OR-expression
+    logical-OR-expression ? expression : conditional-expression
+
+assignment-expression
+    conditional-expression
+    unary-expression assignment-operator assignment-expression
+
+assignment-operator
+    =
+    *=
+    /=
+    %=
+    +=
+    -=
+    &=
+    ^=
+    |=
+
+expression
+    assignment-expression
+    expression , assignment-expression
+
+constant-expression
+    conditional-expression
+
+#
+# C declaration rules (not complete)
+#
+
+declaration
+    declaration-specifiers ;
+    declaration-specifiers init-declarator-list ;
+
+declaration-specifiers
+    type-specifier
+    type-specifier declaration-specifiers
+
+init-declarator-list
+    init-declarator
+    init-declarator-list , init-declarator
+
+init-declarator
+    declarator
+    declarator = initializer
+
+type-specifier
+    void
+    char
+    int
+    float
+    struct-specifier
+
+struct-specifier
+    struct { struct-declaration-list }
+    struct identifier { struct-declaration-list }
+    struct identifier
+
+struct-declaration-list
+    struct-declaration
+    struct-declaration-list struct-declaration
+
+struct-declaration
+    type-specifier struct-declarator-list ;
+
+struct-declarator-list
+    struct-declarator
+    struct-declarator-list , struct-declarator
+
+struct-declarator
+    declarator
+    constant-expression
+    declarator  constant-expression
+
+declarator
+    direct-declarator
+    pointer direct-declarator
+
+direct-declarator
+    identifier
+    direct-declarator [ ]
+    direct-declarator [ constant-expression ]
+
+pointer
+     *
+     * pointer
+
+initializer
+    assignment-expression
+    { initializer-list }
+
+initializer-list
+    initializer
+    initializer-list , initializer
+
+#
+# C statement rules (not complete)
+#
+
+program
+  external_declaration
+  program external_declaration
+
+external_declaration
+  function_definition
+  statement-list
+  
+statement
+    compound-statement
+    expression-statement
+    selection-statement
+    iteration-statement
+    jump-statement
+  print-statement
+  pause-statement
+  scan-statement
+  label-statement
+  
+label-statement
+  label identifier :
+  
+print-statement
+  print ( string-literal ) ;
+  print ( string-literal , expression ) ;
+
+compound-statement
+    { }
+    { declaration-list }
+    { statement-list }
+    { declaration-list statement-list }
+
+declaration-list
+    declaration
+    declaration-list declaration
+
+statement-list
+    statement
+    statement-list statement
+
+expression-statement
+    ;
+    expression ;
+
+selection-statement
+    if ( expression ) statement
+    if ( expression ) statement else statement
+
+iteration-statement
+    while ( expression ) statement
+    do statement while ( expression ) ;
+    for (            ;            ;            ) statement
+    for (            ;            ; expression ) statement
+    for (            ; expression ;            ) statement
+    for (            ; expression ; expression ) statement
+    for ( expression ;            ;            ) statement
+    for ( expression ;            ; expression ) statement
+    for ( expression ; expression ;            ) statement
+    for ( expression ; expression ; expression ) statement
+
+jump-statement
+  goto identifier ;
+    continue ;
+    break ;
+    return ;
+    return expression ;
+  
+function-definition
+    declaration-specifiers declarator declaration-list compound-statement
