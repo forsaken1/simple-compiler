@@ -6,6 +6,10 @@ class Scanner
   end
 
   def run
-    @result = ""
+    self
+  end
+
+  def to_s
+    @tokens.map(&.to_s).join("\n")
   end
 end

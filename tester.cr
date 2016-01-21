@@ -7,21 +7,30 @@ class Tester
   SCANNER_TEST_FILE_OUT = "#{SCANNER_TESTS_DIR}/%s.out"
 
   def initialize
+    @tests_count = 0
+    
     scanner_test
+    print_info
   end
 
   def scanner_test
     (1..100).each do |i|
-      if File.exists?(SCANNER_TEST_FILE_IN % i)
-        if Scanner.new(SCANNER_TEST_FILE_IN % i).run == File.read(SCANNER_TEST_FILE_OUT % i)
-          puts '.'
+      file_name = i < 10 ? "0#{i}" : i # файлы тестов начинаются с "0" для порядка
+      if File.exists?(SCANNER_TEST_FILE_IN % file_name)
+        if Scanner.new(SCANNER_TEST_FILE_IN % file_name).run.to_s == File.read(SCANNER_TEST_FILE_OUT % file_name)
+          print '.'
         else
-          puts 'E'
+          print 'E'
         end
       else
+        @tests_count = i - 1
         break
       end
     end
+  end
+
+  def print_info
+    print "\nTests: #{@tests_count}\n"
   end
 end
 
