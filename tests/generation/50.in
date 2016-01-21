@@ -1,0 +1,10 @@
+int sqr(int i) {
+	return i * i;
+}
+
+void main() {
+	goto l;
+	print("%d", sqr(3));
+	label l:
+	print("do work");
+}

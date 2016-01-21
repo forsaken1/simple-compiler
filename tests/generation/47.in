@@ -1,0 +1,11 @@
+int sqrt(int f) {
+	return f * f;
+}
+
+int sum(int i, int j) {
+	return i + j;
+}
+
+void main() {
+	print("%d", sum(3, 6) + sqrt(5));
+}

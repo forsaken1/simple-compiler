@@ -1,0 +1,4 @@
+int f(int a, float b, char c) {
+    while(a > 0)
+	b += a;
+}

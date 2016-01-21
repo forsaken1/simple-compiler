@@ -1,0 +1,7 @@
+int function (f)
+|
++---(i)
+|
++---{stmt}
+    |
+    +---(expr)

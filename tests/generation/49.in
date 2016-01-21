@@ -1,0 +1,6 @@
+void main() {
+	int i = 3, j = 9;
+	i <> j;
+	print("%d", i);
+	print("%d", j);
+}

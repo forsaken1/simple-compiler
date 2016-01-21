@@ -1,0 +1,7 @@
+void function (main)
+|
++---(i)
+|
++---{stmt}
+    |
+    +---(i)

@@ -1,0 +1,7 @@
+int f(int i, int j) {
+	return i + j;
+}
+
+void main() {
+	print("%d", f(3, 6));
+}

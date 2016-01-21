@@ -1,0 +1,4 @@
+void main() {
+	int a = 10;
+	print("%d", a = 5);
+}

@@ -1,0 +1,12 @@
+int main() {
+	char ch = 'a';
+	char *str = "hello world!";
+	for(int i = 0; i < 10.45; i++)
+		cout << i << endl;
+
+	/* error
+	error 
+	error */
+
+	return 0; //fuuuu
+}

@@ -1,0 +1,10 @@
+int main() {
+	int i = 0, j = 2;
+
+	if(i == 0) {
+		i = 345000;
+		j = 1;
+	}
+	print("%d", i);
+	print("%d", j);
+}

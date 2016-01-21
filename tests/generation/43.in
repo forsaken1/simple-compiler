@@ -1,0 +1,7 @@
+void f(int i) {
+	print("%d", i * i);
+}
+
+void main() {
+	f(4);
+}

@@ -1,0 +1,13 @@
+<external>
+|
++---void function (f)
+|   |
+|   +---{stmt}
+        |
+        +---(i)
+|
++---void function (main)
+    |
+    +---{stmt}
+        |
+        +---(i)

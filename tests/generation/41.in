@@ -1,0 +1,10 @@
+void main() {
+	int i = 0;
+
+	while(i < 9) {
+		i++;
+		if(i == 5)
+			continue;
+		print("%d", i);
+	}
+}
