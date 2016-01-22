@@ -8,29 +8,33 @@ class Tester
 
   def initialize
     @tests_count = 0
+    @fail_tests_count = 0
+    @success_tests_count = 0
     
     scanner_test
     print_info
   end
 
   def scanner_test
-    (1..100).each do |i|
+    (1..2).each do |i|
       file_name = i < 10 ? "0#{i}" : i # файлы тестов начинаются с "0" для порядка
       if File.exists?(SCANNER_TEST_FILE_IN % file_name)
         if Scanner.new(SCANNER_TEST_FILE_IN % file_name).run.to_s == File.read(SCANNER_TEST_FILE_OUT % file_name)
           print '.'
+          @success_tests_count += 1
         else
           print 'E'
+          @fail_tests_count += 1
         end
+        @tests_count += 1
       else
-        @tests_count = i - 1
         break
       end
     end
   end
 
   def print_info
-    print "\nTests: #{@tests_count}\n"
+    print "\nTests: #{@tests_count}\t success: #{@success_tests_count}\t fails: #{@fail_tests_count}\n"
   end
 end
 
