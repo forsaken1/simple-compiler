@@ -50,15 +50,15 @@ class Scanner
   def parse_number
     number = ""
     pos = @pos
-    while is_number? || is_dot?
+    while is_number? || is_dot? || is_e? || is_minus?
       number += @current_char
       next_char
     end
     raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.name}\"").with_info(@line, pos) if is_letter?
-    if number.have_dot?
+    raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_dots?
+    raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_many_e?
+    if number.have_dot? || number.have_e?
       Token.new @line, pos, :float, number
-    elsif number.have_dots?
-      raise ScannerException.new("Invalid float: \"#{number}\"").with_info @line, pos
     else
       Token.new @line, pos, :integer, number
     end
@@ -86,6 +86,14 @@ class Scanner
     while is_space?
       next_char
     end
+  end
+
+  def is_minus?
+    @current_char == '-'
+  end
+
+  def is_e?
+    @current_char == 'E' || @current_char == 'e'
   end
 
   def is_dot?

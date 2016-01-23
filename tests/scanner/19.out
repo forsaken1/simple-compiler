@@ -1,1 +1,2 @@
-1	1	REAL		0E3
+1	1	float		0E3
+1	4	eof		End of file
