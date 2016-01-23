@@ -1,5 +1,23 @@
 require "./token"
 
+class String
+  def have_dot?
+  end
+
+  def have_dots?
+  end
+end
+
+class ScannerException < Exception
+  def with_info(@line, @pos)
+    self
+  end
+
+  def to_s
+    "Lexical error: #{message} on line #{@line} in position #{@pos}"
+  end
+end
+
 class Scanner
   def initialize(@file_name)
     @tokens = [] of Token
@@ -9,12 +27,16 @@ class Scanner
     @pos = 1
     @current_char = @file_content[@iterator]
     @previous_char = nil
+    @exception = nil
   end
 
   def run
     until @tokens.any? && @tokens.last.is_eof?
       @tokens << next_token
     end
+  rescue ex : ScannerException
+    @exception = ex
+  else
     self
   end
 
@@ -22,6 +44,8 @@ class Scanner
     skip_spaces
     if is_letter?
       parse_identificator
+    elsif is_number?
+      parse_number
     elsif is_eof?
       parse_eof
     else
@@ -39,10 +63,27 @@ class Scanner
     end
   end
 
+  def parse_number
+    number = ""
+    pos = @pos
+    while is_number? || is_dot?
+      number += @current_char
+      next_char
+    end
+    raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.name}\"").with_info(@line, pos) if is_letter?
+    if number.have_dot?
+      Token.new @line, pos, :float, number
+    elsif number.have_dots?
+      raise ScannerException.new("Invalid float: \"#{number}\"").with_info @line, pos
+    else
+      Token.new @line, pos, :integer, number
+    end
+  end
+
   def parse_identificator
     identificator = ""
     pos = @pos
-    while is_letter?
+    while is_letter? || is_number?
       identificator += @current_char
       next_char
     end
@@ -63,6 +104,14 @@ class Scanner
     end
   end
 
+  def is_dot?
+    @current_char == '.'
+  end
+
+  def is_number?
+    '0' <= @current_char <= '9'
+  end
+
   def is_letter?
     'a' <= @current_char <= 'z' || 'A' <= @current_char <= 'Z' || @current_char == '_'
   end
@@ -80,6 +129,10 @@ class Scanner
   end
 
   def to_s
-    @tokens.map(&.to_s).join('\n')
+    if @exception
+      @exception.to_s
+    else
+      @tokens.map(&.to_s).join('\n')
+    end
   end
 end
