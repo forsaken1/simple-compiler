@@ -1,22 +1,6 @@
 require "./token"
-
-class String
-  def have_dot?
-  end
-
-  def have_dots?
-  end
-end
-
-class ScannerException < Exception
-  def with_info(@line, @pos)
-    self
-  end
-
-  def to_s
-    "Lexical error: #{message} on line #{@line} in position #{@pos}"
-  end
-end
+require "./exceptions"
+require "./monkey_patching"
 
 class Scanner
   def initialize(@file_name)

@@ -1,1 +1,2 @@
-1	1	INT		1234567890
+1	1	integer		1234567890
+1	11	eof		End of file
