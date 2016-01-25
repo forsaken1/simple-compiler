@@ -6,12 +6,9 @@ class Scanner
   def initialize(@file_name)
     @tokens = [] of Token
     @file_content = File.read(@file_name) + '\0'
-    @iterator = 0
-    @line = 1
-    @pos = 1
+    @iterator, @line, @pos = 0, 1, 1
+    @previous_char, @exception = nil, nil
     @current_char = @file_content[@iterator]
-    @previous_char = nil
-    @exception = nil
   end
 
   def run
@@ -55,9 +52,10 @@ class Scanner
       next_char
     end
     raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.name}\"").with_info(@line, pos) if is_letter?
-    raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_dots?
-    raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_many_e?
     if number.have_dot? || number.have_e?
+      raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_dots?
+      raise ScannerException.new("Too many symbol \"E\" in real number: \"#{number}\"").with_info(@line, pos) if number.have_many_e?
+      raise ScannerException.new("Invalid real number: \"#{number}\"").with_info(@line, pos) unless number.valid_real_number?
       Token.new @line, pos, :float, number
     else
       Token.new @line, pos, :integer, number
