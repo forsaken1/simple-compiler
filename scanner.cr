@@ -8,6 +8,8 @@ class Scanner
     @file_content = File.read(@file_name) + '\0'
     @iterator, @line, @pos = 0, 1, 1
     @previous_char, @exception = nil, nil
+    @operations = ["+", "+=", "-", "-=", "*", "*=", "/", "/="].map { |op| [op, true] }.to_h
+    @it_can_be_operation = ["-", "+", "*", "/"].map { |op| [op, true] }.to_h
     @current_char = @file_content[@iterator]
   end
 
@@ -25,12 +27,22 @@ class Scanner
     skip_spaces
     if is_letter?
       parse_identificator
-    elsif is_number?
+    elsif is_number? || is_dot?
       parse_number
+    elsif is_operation?
+      parse_operation
     elsif is_eof?
       parse_eof
     else
       parse_unknown
+    end
+  end
+
+  def to_s
+    if @exception
+      @exception.to_s
+    else
+      @tokens.map(&.to_s).join('\n')
     end
   end
 
@@ -44,12 +56,27 @@ class Scanner
     end
   end
 
+  def parse_operation
+    operation = @current_char.to_s
+    pos = @pos
+    until @operations[operation]
+      next_char
+      operation += @current_char
+      raise ScannerException.new("lol").with_info(@line, pos) if operation.size > 3
+    end
+    Token.new @line, pos, :operation, operation
+  end
+
   def parse_number
     number = ""
     pos = @pos
-    while is_number? || is_dot? || is_e? || is_minus?
+    while is_number? || is_dot? || is_e?
       number += @current_char
       next_char
+      if is_minus? && (@previous_char == 'e' || @previous_char == 'E') # shit
+        number += @current_char
+        next_char
+      end
     end
     raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.name}\"").with_info(@line, pos) if is_letter?
     if number.have_dot? || number.have_e?
@@ -86,6 +113,10 @@ class Scanner
     end
   end
 
+  def is_operation?
+    @it_can_be_operation[@current_char.to_s]
+  end
+
   def is_minus?
     @current_char == '-'
   end
@@ -116,13 +147,5 @@ class Scanner
 
   def inc_iterator!
     @iterator += 1
-  end
-
-  def to_s
-    if @exception
-      @exception.to_s
-    else
-      @tokens.map(&.to_s).join('\n')
-    end
   end
 end
