@@ -21,13 +21,15 @@ class Tester
     (1..26).each do |i|
       file_name = i < 10 ? "0#{i}" : i # файлы тестов начинаются с "0" для порядка
       if File.exists?(SCANNER_TEST_FILE_IN % file_name)
-        if Scanner.new(SCANNER_TEST_FILE_IN % file_name).run.to_s == File.read(SCANNER_TEST_FILE_OUT % file_name)
+        output = Scanner.new(SCANNER_TEST_FILE_IN % file_name).run.to_s
+        true_output = File.read(SCANNER_TEST_FILE_OUT % file_name)
+        if output == true_output
           print '.'
           @success_tests_count += 1
         else
           print 'E'
           @fail_tests_count += 1
-          debug { puts "\n#{Scanner.new(SCANNER_TEST_FILE_IN % file_name).run.to_s}" }
+          debug { puts "\nget:\n#{output.to_readable_format}\n\nexpected:\n#{true_output.to_readable_format}" }
         end
         @tests_count += 1
       else

@@ -8,8 +8,8 @@ class Scanner
     @file_content = File.read(@file_name) + '\0'
     @iterator, @line, @pos = 0, 1, 1
     @previous_char, @exception = nil, nil
-    @operations = ["+", "+=", "-", "-=", "*", "*=", "/", "/="].map { |op| [op, true] }.to_h
-    @it_can_be_operation = ["-", "+", "*", "/"].map { |op| [op, true] }.to_h
+    @operations = ["+=", "-=", "*=", "/=", "=="].map { |op| [op, true] }.to_h
+    @it_can_be_operation = ["-", "+", "*", "/", "="].map { |op| [op, true] }.to_h
     @current_char = @file_content[@iterator]
   end
 
@@ -29,10 +29,10 @@ class Scanner
       parse_identificator
     elsif is_number? || is_dot?
       parse_number
-    elsif is_operation?
-      parse_operation
     elsif is_eof?
       parse_eof
+    elsif is_operation?
+      parse_operation
     else
       parse_unknown
     end
@@ -59,12 +59,12 @@ class Scanner
   def parse_operation
     operation = @current_char.to_s
     pos = @pos
-    until @operations[operation]
-      next_char
-      operation += @current_char
-      raise ScannerException.new("lol").with_info(@line, pos) if operation.size > 3
+    next_char
+    if @operations[operation + @current_char]?
+      Token.new @line, pos, :operation, operation + @current_char
+    else
+      Token.new @line, pos, :operation, operation
     end
-    Token.new @line, pos, :operation, operation
   end
 
   def parse_number
