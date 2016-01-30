@@ -18,7 +18,7 @@ class Tester
   end
 
   def scanner_test
-    (1..26).each do |i|
+    (1..30).each do |i|
       file_name = i < 10 ? "0#{i}" : i # файлы тестов начинаются с "0" для порядка
       if File.exists?(SCANNER_TEST_FILE_IN % file_name)
         output = Scanner.new(SCANNER_TEST_FILE_IN % file_name).run.to_s
