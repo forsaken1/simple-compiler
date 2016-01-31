@@ -10,6 +10,7 @@ class Scanner
     @previous_char, @exception = nil, nil
     @operations = ["+=", "-=", "*=", "/=", "=="].map { |op| [op, true] }.to_h
     @it_can_be_operation = ["-", "+", "*", "/", "="].map { |op| [op, true] }.to_h
+    @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |op| [op, true] }.to_h
     @current_char = @file_content[@iterator]
   end
 
@@ -29,6 +30,8 @@ class Scanner
       parse_identificator
     elsif is_number? || is_dot?
       parse_number
+    elsif is_char_separator?
+      parse_char
     elsif is_eof?
       parse_eof
     elsif is_operation?
@@ -54,6 +57,42 @@ class Scanner
       @line += 1
       @pos = 1
     end
+  end
+
+  def parse_char
+    pos = @pos
+    char = ""
+    token_type = :char
+    next_char
+    if is_backslash?
+      char += @current_char
+      token_type = :escape
+      next_char
+      if @escapes[@current_char.to_s]?
+        char += @current_char
+        next_char
+        if is_char_separator?
+          next_char
+        else
+          # raise
+        end
+      else
+        raise ScannerException.new("Invalid ESCAPE-sequence: \"#{char + @current_char}\"").with_info(@line, pos)
+      end
+    else
+      if is_char?
+        char += @current_char
+        next_token
+        if is_char_separator?
+          next_char
+        else
+          # raise
+        end
+      else
+        # raise
+      end
+    end
+    Token.new @line, pos, token_type, char
   end
 
   def parse_operation
@@ -108,13 +147,25 @@ class Scanner
   end
 
   def skip_spaces
-    while is_space?
+    while is_space? || is_eol? || is_tab?
       next_char
     end
   end
 
   def is_operation?
     @it_can_be_operation[@current_char.to_s]
+  end
+
+  def is_string_separator?
+    @current_char == '"'
+  end
+
+  def is_char_separator?
+    @current_char == '\''
+  end
+
+  def is_backslash?
+    @current_char == '\\'
   end
 
   def is_minus?
@@ -127,6 +178,14 @@ class Scanner
 
   def is_dot?
     @current_char == '.'
+  end
+
+  def is_tab?
+    @current_char == '\t'
+  end
+
+  def is_char?
+    is_number? || is_letter?
   end
 
   def is_number?
@@ -143,6 +202,10 @@ class Scanner
 
   def is_eof?
     @current_char == '\0'
+  end
+
+  def is_eol?
+    @current_char == '\n'
   end
 
   def inc_iterator!
