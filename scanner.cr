@@ -13,6 +13,7 @@ class Scanner
     @operations = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->", "==", ">=", "<=", "!=", "++", "--", ">>", "<<", "||", "&&"].map { |op| [op, true] }.to_h.merge @it_can_be_operation
     @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |e| [e, true] }.to_h
     @separators = ["(", ")", "[", "]", "{", "}", ";", ","].map { |s| [s, true] }.to_h
+    @keywords = ["int", "char", "for"].map { |k| [k, true] }.to_h
 
     @current_char = @file_content[@iterator]
   end
@@ -159,11 +160,13 @@ class Scanner
   private def parse_identificator
     identificator = ""
     pos = @pos
+    token_type = :identificator
     while is_letter? || is_number?
       identificator += @current_char
       next_char
     end
-    Token.new @line, pos, :identificator, identificator
+    token_type = :keyword if keyword?(identificator)
+    Token.new @line, pos, token_type, identificator
   end
 
   private def parse_eof
@@ -184,6 +187,10 @@ class Scanner
 
   private def inc_iterator!
     @iterator += 1
+  end
+
+  private def keyword?(identificator)
+    @keywords[identificator]?
   end
 
 

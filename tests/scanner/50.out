@@ -1,3 +1,4 @@
-1	1	KEYWORD		int
-1	5	KEYWORD		char
-2	1	KEYWORD		for
+1	1	keyword		int
+1	5	keyword		char
+2	1	keyword		for
+2	4	eof		End of file
