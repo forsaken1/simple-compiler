@@ -32,6 +32,8 @@ class Scanner
       parse_number
     elsif is_char_separator?
       parse_char
+    elsif is_string_separator?
+      parse_string
     elsif is_eof?
       parse_eof
     elsif is_operation?
@@ -59,7 +61,20 @@ class Scanner
     end
   end
 
-  def parse_char
+  def parse_string
+    pos = @pos
+    string = ""
+    next_char
+    until is_string_separator?
+      raise ScannerException.new("Unexpected end of file").with_info(@line, @pos) if is_eof?
+      string += @current_char
+      next_char
+    end
+    next_char
+    Token.new @line, pos, :string, string
+  end
+
+  def parse_char # refactoring
     pos = @pos
     char = ""
     token_type = :char
@@ -80,7 +95,7 @@ class Scanner
         raise ScannerException.new("Invalid ESCAPE-sequence: \"#{char + @current_char}\"").with_info(@line, pos)
       end
     else
-      if is_char?
+      if is_char? # shit
         char += @current_char
         next_token
         if is_char_separator?
@@ -89,7 +104,7 @@ class Scanner
           # raise
         end
       else
-        # raise
+        raise ScannerException.new("Invalid character constant").with_info(@line, pos)
       end
     end
     Token.new @line, pos, token_type, char
@@ -106,7 +121,7 @@ class Scanner
     end
   end
 
-  def parse_number
+  def parse_number # refactoring
     number = ""
     pos = @pos
     while is_number? || is_dot? || is_e?
@@ -119,8 +134,8 @@ class Scanner
     end
     raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.name}\"").with_info(@line, pos) if is_letter?
     if number.have_dot? || number.have_e?
-      raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_dots?
-      raise ScannerException.new("Too many symbol \"E\" in real number: \"#{number}\"").with_info(@line, pos) if number.have_many_e?
+      raise ScannerException.new("Too many dots in real number: \"#{number}\"").with_info(@line, pos) if number.have_dots? # shit
+      raise ScannerException.new("Too many symbol \"E\" in real number: \"#{number}\"").with_info(@line, pos) if number.have_many_e? # shit
       raise ScannerException.new("Invalid real number: \"#{number}\"").with_info(@line, pos) unless number.valid_real_number?
       Token.new @line, pos, :float, number
     else
