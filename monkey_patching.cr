@@ -3,16 +3,8 @@ class String
     1 <= dot_count
   end
 
-  def have_dots?
-    1 < dot_count
-  end
-
   def have_e?
     1 <= e_count
-  end
-
-  def have_many_e?
-    1 < e_count
   end
 
   def valid_real_number?

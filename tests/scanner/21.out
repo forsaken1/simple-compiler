@@ -1,1 +1,1 @@
-Lexical error: Too many symbol "E" in real number: "4e567e3" on line 1 in position 1
+Lexical error: Invalid real number: "4e567e3" on line 1 in position 1

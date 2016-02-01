@@ -9,15 +9,14 @@ class Tester
   SCANNER_TEST_FILE_OUT = "#{SCANNER_TESTS_DIR}/%s.out"
 
   def initialize
-    @tests_count = 0
-    @fail_tests_count = 0
-    @success_tests_count = 0
+    @tests_count, @fail_tests_count, @success_tests_count = 0, 0, 0
+    @debug_info = ""
     
-    scanner_test
+    scanner_tests
     print_info
   end
 
-  def scanner_test
+  def scanner_tests
     (1..40).each do |i|
       file_name = i < 10 ? "0#{i}" : i # файлы тестов начинаются с "0" для порядка
       if File.exists?(SCANNER_TEST_FILE_IN % file_name)
@@ -31,7 +30,7 @@ class Tester
         else
           print 'E'
           @fail_tests_count += 1
-          debug { puts "\nget:\n#{output.to_readable_format}\n\nexpected:\n#{true_output.to_readable_format}\n\nin file: #{out_file}\n" }
+          debug { @debug_info += "\nin file #{out_file}:\nget:\n#{output.to_readable_format}\n\nexpected:\n#{true_output.to_readable_format}\n" }
         end
         @tests_count += 1
       else
@@ -41,6 +40,7 @@ class Tester
   end
 
   def print_info
+    print @debug_info
     print "\nTests: #{@tests_count}\t success: #{@success_tests_count}\t fails: #{@fail_tests_count}\n"
   end
 
