@@ -1,5 +1,6 @@
-1	1	CHAR		a
-1	4	CHAR		b
-1	7	CHAR		c
-1	10	CHAR		d
-1	13	ESCAPE		\n
+1	1	char		a
+1	4	char		b
+1	7	char		c
+1	10	char		d
+1	13	escape		\n
+1	17	eof		End of file

@@ -8,9 +8,12 @@ class Scanner
     @file_content = File.read(@file_name) + '\0'
     @iterator, @line, @pos = 0, 1, 1
     @previous_char, @exception = nil, nil
-    @operations = ["+=", "-=", "*=", "/=", "=="].map { |op| [op, true] }.to_h
-    @it_can_be_operation = ["-", "+", "*", "/", "="].map { |op| [op, true] }.to_h
-    @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |op| [op, true] }.to_h
+
+    @it_can_be_operation = ["-", "+", "*", "/", "=", "%", "<", ">", "!", "&", "|", "^", "?", ":", "."].map { |op| [op, true] }.to_h
+    @operations = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->", "==", ">=", "<=", "!=", "++", "--", ">>", "<<", "||", "&&"].map { |op| [op, true] }.to_h.merge @it_can_be_operation
+    @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |e| [e, true] }.to_h
+    @separators = ["(", ")", "[", "]", "{", "}", ";", ","].map { |s| [s, true] }.to_h
+
     @current_char = @file_content[@iterator]
   end
 
@@ -25,9 +28,11 @@ class Scanner
   end
 
   def next_token
-    skip_spaces
+    skip_spaces!
     if is_letter?
       parse_identificator
+    elsif is_operation?
+      parse_operation
     elsif is_number? || is_dot?
       parse_number
     elsif is_char_separator?
@@ -36,8 +41,8 @@ class Scanner
       parse_string
     elsif is_eof?
       parse_eof
-    elsif is_operation?
-      parse_operation
+    elsif is_separator?
+      parse_separator
     else
       parse_unknown
     end
@@ -51,6 +56,8 @@ class Scanner
     end
   end
 
+
+
   private def next_char
     @previous_char = @current_char
     @current_char = @file_content[inc_iterator!]
@@ -59,6 +66,13 @@ class Scanner
       @line += 1
       @pos = 1
     end
+  end
+
+  private def parse_separator
+    separator = @current_char.to_s
+    pos = @pos
+    next_char
+    Token.new @line, pos, :separator, separator
   end
 
   private def parse_string
@@ -111,13 +125,14 @@ class Scanner
   end
 
   private def parse_operation
-    operation = @current_char.to_s
     pos = @pos
     next_char
-    if @operations[operation + @current_char]?
-      Token.new @line, pos, :operation, operation + @current_char
-    else
+    operation = @previous_char.to_s + @current_char.to_s
+    if @operations[operation]?
+      next_char
       Token.new @line, pos, :operation, operation
+    else
+      Token.new @line, pos, :operation, operation[0].to_s
     end
   end
 
@@ -159,14 +174,30 @@ class Scanner
     Token.new @line, @pos, :unknown, "Unknown symbol"
   end
 
-  private def skip_spaces
-    while is_space? || is_eol? || is_tab?
+
+
+  private def skip_spaces!
+    while is_space? || is_eol? || is_tab? || is_carriage_return?
       next_char
     end
   end
 
+  private def inc_iterator!
+    @iterator += 1
+  end
+
+
+
+  private def is_carriage_return?
+    @current_char == '\r'
+  end
+
+  private def is_separator?
+    @separators[@current_char.to_s]?
+  end
+
   private def is_operation?
-    @it_can_be_operation[@current_char.to_s]
+    @it_can_be_operation[@current_char.to_s]?
   end
 
   private def is_string_separator?
@@ -219,9 +250,5 @@ class Scanner
 
   private def is_eol?
     @current_char == '\n'
-  end
-
-  private def inc_iterator!
-    @iterator += 1
   end
 end
