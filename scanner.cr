@@ -51,7 +51,7 @@ class Scanner
     end
   end
 
-  def next_char
+  private def next_char
     @previous_char = @current_char
     @current_char = @file_content[inc_iterator!]
     @pos += 1
@@ -61,7 +61,7 @@ class Scanner
     end
   end
 
-  def parse_string
+  private def parse_string
     pos = @pos
     string = ""
     next_char
@@ -74,7 +74,7 @@ class Scanner
     Token.new @line, pos, :string, string
   end
 
-  def parse_char # refactoring
+  private def parse_char # refactoring
     pos = @pos
     char = ""
     token_type = :char
@@ -110,7 +110,7 @@ class Scanner
     Token.new @line, pos, token_type, char
   end
 
-  def parse_operation
+  private def parse_operation
     operation = @current_char.to_s
     pos = @pos
     next_char
@@ -121,7 +121,7 @@ class Scanner
     end
   end
 
-  def parse_number # refactoring
+  private def parse_number # refactoring
     number = ""
     pos = @pos
     while is_number? || is_dot? || is_e?
@@ -143,7 +143,7 @@ class Scanner
     end
   end
 
-  def parse_identificator
+  private def parse_identificator
     identificator = ""
     pos = @pos
     while is_letter? || is_number?
@@ -153,77 +153,77 @@ class Scanner
     Token.new @line, pos, :identificator, identificator
   end
 
-  def parse_eof
+  private def parse_eof
     Token.new @line, @pos, :eof, "End of file"
   end
 
-  def parse_unknown
+  private def parse_unknown
     Token.new @line, @pos, :unknown, "Unknown symbol"
   end
 
-  def skip_spaces
+  private def skip_spaces
     while is_space? || is_eol? || is_tab?
       next_char
     end
   end
 
-  def is_operation?
+  private def is_operation?
     @it_can_be_operation[@current_char.to_s]
   end
 
-  def is_string_separator?
+  private def is_string_separator?
     @current_char == '"'
   end
 
-  def is_char_separator?
+  private def is_char_separator?
     @current_char == '\''
   end
 
-  def is_backslash?
+  private def is_backslash?
     @current_char == '\\'
   end
 
-  def is_minus?
+  private def is_minus?
     @current_char == '-'
   end
 
-  def is_e?
+  private def is_e?
     @current_char == 'E' || @current_char == 'e'
   end
 
-  def is_dot?
+  private def is_dot?
     @current_char == '.'
   end
 
-  def is_tab?
+  private def is_tab?
     @current_char == '\t'
   end
 
-  def is_char?
+  private def is_char?
     is_number? || is_letter?
   end
 
-  def is_number?
+  private def is_number?
     '0' <= @current_char <= '9'
   end
 
-  def is_letter?
+  private def is_letter?
     'a' <= @current_char <= 'z' || 'A' <= @current_char <= 'Z' || @current_char == '_'
   end
 
-  def is_space?
+  private def is_space?
     @current_char == ' '
   end
 
-  def is_eof?
+  private def is_eof?
     @current_char == '\0'
   end
 
-  def is_eol?
+  private def is_eol?
     @current_char == '\n'
   end
 
-  def inc_iterator!
+  private def inc_iterator!
     @iterator += 1
   end
 end
