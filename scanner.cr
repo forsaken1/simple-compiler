@@ -13,7 +13,7 @@ class Scanner
     @operations = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->", "==", ">=", "<=", "!=", "++", "--", ">>", "<<", "||", "&&"].map { |op| [op, true] }.to_h.merge @it_can_be_operation
     @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |e| [e, true] }.to_h
     @separators = ["(", ")", "[", "]", "{", "}", ";", ","].map { |s| [s, true] }.to_h
-    @keywords = ["int", "char", "for", "return"].map { |k| [k, true] }.to_h
+    @keywords = ["int", "char", "for", "return", "while"].map { |k| [k, true] }.to_h
 
     @current_char = @file_content[@iterator]
   end
@@ -123,7 +123,7 @@ class Scanner
         if is_char_separator?
           next_char
         else
-          # raise
+          raise ScannerException.new("Invalid character constant").with_info(@line, pos)
         end
       else
         raise ScannerException.new("Invalid ESCAPE-sequence: \"#{char + @current_char}\"").with_info(@line, pos)
