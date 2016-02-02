@@ -1,1 +1,2 @@
-2	1	KEYWORD		char
+2	1	keyword		char
+2	5	eof		End of file

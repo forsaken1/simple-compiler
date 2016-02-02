@@ -7,13 +7,13 @@ class Scanner
     @tokens = [] of Token
     @file_content = File.read(@file_name) + '\0'
     @iterator, @line, @pos = 0, 1, 1
-    @previous_char, @exception = nil, nil
+    @previous_char, @exception = '\0', nil
 
     @it_can_be_operation = ["-", "+", "*", "/", "=", "%", "<", ">", "!", "&", "|", "^", "?", ":", "."].map { |op| [op, true] }.to_h
     @operations = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->", "==", ">=", "<=", "!=", "++", "--", ">>", "<<", "||", "&&"].map { |op| [op, true] }.to_h.merge @it_can_be_operation
     @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |e| [e, true] }.to_h
     @separators = ["(", ")", "[", "]", "{", "}", ";", ","].map { |s| [s, true] }.to_h
-    @keywords = ["int", "char", "for"].map { |k| [k, true] }.to_h
+    @keywords = ["int", "char", "for", "return"].map { |k| [k, true] }.to_h
 
     @current_char = @file_content[@iterator]
   end
@@ -30,6 +30,10 @@ class Scanner
 
   def next_token
     skip_spaces!
+    while is_comment_begin?
+      parse_comment
+      skip_spaces!
+    end
     if is_letter?
       parse_identificator
     elsif is_operation?
@@ -67,6 +71,21 @@ class Scanner
       @line += 1
       @pos = 1
     end
+  end
+
+  private def parse_comment
+    next_char
+    if is_asterisk?
+      until is_slash? && @previous_char == '*'
+        next_char
+        raise ScannerException.new("Unexpected end of file").with_info(@line, @pos) if is_eof?
+      end
+    else
+      until is_eol? || is_eof?
+        next_char
+      end
+    end
+    next_char unless is_eof?
   end
 
   private def parse_separator
@@ -174,7 +193,7 @@ class Scanner
   end
 
   private def parse_unknown
-    Token.new @line, @pos, :unknown, "Unknown symbol"
+    raise ScannerException.new("Indefinite character: \"#{@current_char}\"").with_info(@line, @pos)
   end
 
 
@@ -189,14 +208,34 @@ class Scanner
     @iterator += 1
   end
 
+  private def dec_iterator!
+    @iterator -= 1
+  end
+
   private def keyword?(identificator)
     @keywords[identificator]?
+  end
+
+  private def future_char
+    @file_content[@iterator + 1]
   end
 
 
 
   private def is_carriage_return?
     @current_char == '\r'
+  end
+
+  private def is_comment_begin?
+    is_slash? && (future_char == '/' || future_char == '*')
+  end
+
+  private def is_slash?
+    @current_char == '/'
+  end
+
+  private def is_asterisk?
+    @current_char == '*'
   end
 
   private def is_separator?
