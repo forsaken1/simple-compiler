@@ -3,8 +3,7 @@ class Tester
 
   TESTS_DIR = "tests"
   SCANNER_TESTS_DIR = "#{TESTS_DIR}/scanner"
-  SCANNER_TEST_FILE_IN = "#{SCANNER_TESTS_DIR}/%s.in"
-  SCANNER_TEST_FILE_OUT = "#{SCANNER_TESTS_DIR}/%s.out"
+  PARSER_TESTS_DIR = "#{TESTS_DIR}/parser"
 
   def initialize
     @tests_count, @fail_tests_count, @success_tests_count = 0, 0, 0
@@ -13,16 +12,17 @@ class Tester
 
   def run
     scanner_tests
+    parser_tests
     print_info
   end
 
-  def scanner_tests
-    (1..60).each do |i|
-      file_name = i < 10 ? "0#{i}" : i # файлы тестов начинаются с "0" для порядка
-      if File.exists?(SCANNER_TEST_FILE_IN % file_name)
-        in_file = SCANNER_TEST_FILE_IN % file_name
-        out_file = SCANNER_TEST_FILE_OUT % file_name
-        output = `./simple-compiler -s #{in_file}`
+  def run_tests(range, directory)
+    (range).each do |i|
+      file_name = i < 10 ? "0#{i}" : i
+      in_file = "#{directory}/#{file_name}.in"
+      out_file = "#{directory}/#{file_name}.out"
+      if File.exists?(in_file)
+        output = yield in_file
         true_output = File.read(out_file)
         if output == true_output
           print '.'
@@ -36,6 +36,18 @@ class Tester
       else
         break
       end
+    end
+  end
+
+  def parser_tests
+    run_tests 1..1, PARSER_TESTS_DIR do |file|
+      `./simple-compiler -p #{file}`
+    end
+  end
+
+  def scanner_tests
+    run_tests 1..60, SCANNER_TESTS_DIR do |file|
+      `./simple-compiler -s #{file}`
     end
   end
 
