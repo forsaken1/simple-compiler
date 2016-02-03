@@ -1,5 +1,3 @@
-require "./scanner"
-
 class Tester
   DEBUG = true
 
@@ -11,7 +9,9 @@ class Tester
   def initialize
     @tests_count, @fail_tests_count, @success_tests_count = 0, 0, 0
     @debug_info = ""
-    
+  end
+
+  def run
     scanner_tests
     print_info
   end
@@ -22,7 +22,7 @@ class Tester
       if File.exists?(SCANNER_TEST_FILE_IN % file_name)
         in_file = SCANNER_TEST_FILE_IN % file_name
         out_file = SCANNER_TEST_FILE_OUT % file_name
-        output = Scanner.new(in_file).run.to_s
+        output = `./simple-compiler -s #{in_file}`
         true_output = File.read(out_file)
         if output == true_output
           print '.'
@@ -30,7 +30,7 @@ class Tester
         else
           print 'E'
           @fail_tests_count += 1
-          debug { @debug_info += "\nin file #{out_file}:\nget:\n#{output.to_readable_format}\n\nexpected:\n#{true_output.to_readable_format}\n" }
+          debug { @debug_info += "\nin file #{out_file}:\nget:\n#{output}\n\nexpected:\n#{true_output}\n" }
         end
         @tests_count += 1
       else
@@ -49,4 +49,4 @@ class Tester
   end
 end
 
-Tester.new
+Tester.new.run
