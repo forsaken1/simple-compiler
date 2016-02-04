@@ -11,12 +11,13 @@ class Tester
   end
 
   def run
+    build_compiler
     scanner_tests
     parser_tests
     print_info
   end
 
-  def run_tests(range, directory)
+  private def run_tests(range, directory)
     (range).each do |i|
       file_name = i < 10 ? "0#{i}" : i
       in_file = "#{directory}/#{file_name}.in"
@@ -39,25 +40,29 @@ class Tester
     end
   end
 
-  def parser_tests
+  private def parser_tests
     run_tests 1..1, PARSER_TESTS_DIR do |file|
       `./simple-compiler -p #{file}`
     end
   end
 
-  def scanner_tests
+  private def scanner_tests
     run_tests 1..60, SCANNER_TESTS_DIR do |file|
       `./simple-compiler -s #{file}`
     end
   end
 
-  def print_info
+  private def print_info
     print @debug_info
     print "\nTests: #{@tests_count}\t success: #{@success_tests_count}\t fails: #{@fail_tests_count}\n"
   end
 
-  def debug
+  private def debug
     yield if DEBUG
+  end
+
+  private def build_compiler
+    `crystal build simple-compiler.cr`
   end
 end
 
