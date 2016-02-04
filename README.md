@@ -1,30 +1,30 @@
 # Simple Compiler
 
-Переписываю свой старый компилятор https://github.com/forsaken1/compiler
+Rewrite my old compiler https://github.com/forsaken1/compiler
 
-По урезанной грамматике языка С, со старыми тестами
+Grammar: C lang (cutted)
 
-Статус: синтаксический анализ
+Status: syntax analysis
 
 
 
 ## Todo
 
-1. [x] Лексический анализ
+1. [x] lexical analysis
 
-2. [ ] Синтаксический анализ
+2. [ ] syntax analysis
 
-3. [ ] Семантический анализ
+3. [ ] semantic analysis
 
-4. [ ] Генерация
+4. [ ] code generation
 
-5. [ ] Оптимизация
+5. [ ] optimization
 
-6. [ ] Кодонеговнофикация (+ нормальные тесты)
+6. [ ] code-not-shitication
 
 
 
-## Установка и запуск
+## Installation
 
 ```bash
 brew install crystal-lang
