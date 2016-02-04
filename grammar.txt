@@ -10,8 +10,8 @@ primary-expression
 
 postfix-expression
     primary-expression
-  postfix_expression '(' ')'
-  postfix_expression '(' argument_expression_list ')'
+    postfix_expression '(' ')'
+    postfix_expression '(' argument_expression_list ')'
     postfix-expression [ expression ]
     postfix-expression . identifier
     postfix-expression -> identifier
@@ -178,8 +178,8 @@ direct-declarator
     direct-declarator [ constant-expression ]
 
 pointer
-     *
-     * pointer
+    *
+    * pointer
 
 initializer
     assignment-expression
@@ -194,12 +194,12 @@ initializer-list
 #
 
 program
-  external_declaration
-  program external_declaration
+    external_declaration
+    program external_declaration
 
 external_declaration
-  function_definition
-  statement-list
+    function_definition
+    statement-list
   
 statement
     compound-statement
@@ -207,17 +207,17 @@ statement
     selection-statement
     iteration-statement
     jump-statement
-  print-statement
-  pause-statement
-  scan-statement
-  label-statement
+    print-statement
+    pause-statement
+    scan-statement
+    label-statement
   
 label-statement
-  label identifier :
+    label identifier :
   
 print-statement
-  print ( string-literal ) ;
-  print ( string-literal , expression ) ;
+    printf ( string-literal ) ;
+    printf ( string-literal , expression ) ;
 
 compound-statement
     { }
@@ -254,7 +254,7 @@ iteration-statement
     for ( expression ; expression ; expression ) statement
 
 jump-statement
-  goto identifier ;
+    goto identifier ;
     continue ;
     break ;
     return ;

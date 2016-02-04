@@ -13,7 +13,7 @@ class SimpleCompiler
       if @flag == "-s"
         Scanner.new(@file_path).run.to_s
       elsif @flag == "-p"
-        Parser.new(@file_path).run.to_s
+        Parser.new(Scanner.new(@file_path)).run.to_s
       end
     end
   end
