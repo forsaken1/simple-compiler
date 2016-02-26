@@ -1,6 +1,6 @@
 require "./token"
 require "./exceptions"
-require "./monkey_patching"
+require "./monkey_patching/string"
 
 class Scanner
   def initialize(@file_name)
