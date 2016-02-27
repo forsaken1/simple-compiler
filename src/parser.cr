@@ -5,12 +5,12 @@ class Parser
 
   private property scanner
 
-  def initialize(@scanner)
+  def initialize(@scanner : Scanner)
     @current_token = uninitialized Token
-    @ast = nil # abstract syntax tree
+    @ast = uninitialized Node # abstract syntax tree
   end
 
-  def run
+  def run : Node
     next_token
     @ast = expression_statement
   end
@@ -19,7 +19,7 @@ class Parser
     @ast.to_s
   end
 
-  private def expression_statement
+  private def expression_statement : NodeStatement
     expr = expression
     if @current_token.is_semicolon?
       next_token
@@ -27,7 +27,7 @@ class Parser
     NodeStatement.new expr
   end
 
-  private def expression(n = 0)
+  private def expression(n = 0) : Node
     return unary_expression if n > 14
     #case n of
     #when 0: 
@@ -35,15 +35,15 @@ class Parser
     expression n + 1
   end
 
-  private def unary_expression
+  private def unary_expression : Node
     postfix_expression
   end
 
-  private def postfix_expression
+  private def postfix_expression : Node
     primary_expression
   end
 
-  private def primary_expression
+  private def primary_expression : Node
     node = if @current_token.is_identificator?
       Node.new @current_token
     #elsif @current_token.is_constant?
@@ -53,8 +53,10 @@ class Parser
     #elsif @current_token.is_left_bracket?
     #  expression
     else
+      Node.new @current_token
     end
     next_token
+    #puts node.to_s
     node
   end
 

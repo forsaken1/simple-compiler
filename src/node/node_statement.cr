@@ -1,5 +1,5 @@
 class NodeStatement < Node
-  def initializer(@expression)
+  def initialize(@expression : Node)
   end
 
   def to_s

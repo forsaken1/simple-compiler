@@ -1,8 +1,8 @@
 class Node
-  def initialize(@token)
+  def initialize(@token : Token)
   end
 
   def to_s
-    "(#{@token.name})"
+    "(#{@token.text})"
   end
 end

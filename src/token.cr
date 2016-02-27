@@ -1,13 +1,13 @@
 class Token
-  def initialize(@line, @pos, @type, @name) # todo: name -> text
+  def initialize(@line, @pos, @type, @text)
   end
 
-  def name
-    @name
+  def text
+    @text
   end
 
   def to_s
-    "#{@line}\t#{@pos}\t#{@type}\t\t#{@name}"
+    "#{@line}\t#{@pos}\t#{@type}\t\t#{@text}"
   end
 
   # Type checkers
@@ -27,6 +27,6 @@ class Token
   # Checkers
 
   def is_semicolon?
-    is_separator? && @name == ";"
+    is_separator? && @text == ";"
   end
 end

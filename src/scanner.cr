@@ -28,7 +28,7 @@ class Scanner
     self
   end
 
-  def next_token
+  def next_token : Token
     skip_spaces!
     while is_comment_begin?
       parse_comment
@@ -167,7 +167,7 @@ class Scanner
         next_char
       end
     end
-    raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.name}\"").with_info(@line, pos) if is_letter?
+    raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.text}\"").with_info(@line, pos) if is_letter?
     if number.have_dot? || number.have_e?
       raise ScannerException.new("Invalid real number: \"#{number}\"").with_info(@line, pos) unless number.valid_real_number?
       Token.new @line, pos, :float, number
