@@ -1,5 +1,4 @@
-require "./src/scanner"
-require "./src/parser"
+require "./src/require"
 
 class SimpleCompiler
   def initialize

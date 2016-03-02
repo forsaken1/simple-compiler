@@ -1,0 +1,2 @@
+class NodeConstant < Node
+end

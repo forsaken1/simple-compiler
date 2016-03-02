@@ -1,0 +1,2 @@
+class NodeIdentificator < Node
+end

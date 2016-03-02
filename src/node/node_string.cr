@@ -1,0 +1,2 @@
+class NodeString < Node
+end

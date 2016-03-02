@@ -1,5 +1,4 @@
-require "./token"
-require "./node/*"
+
 
 class Parser
 
@@ -45,18 +44,17 @@ class Parser
 
   private def primary_expression : Node
     node = if @current_token.is_identificator?
-      Node.new @current_token
-    #elsif @current_token.is_constant?
-    #  Node.new
-    #elsif @current_token.is_string?
-    #  Node.new
-    #elsif @current_token.is_left_bracket?
-    #  expression
+      NodeIdentificator.new @current_token
+    elsif @current_token.is_constant?
+      NodeConstant.new @current_token
+    elsif @current_token.is_string?
+      NodeString.new @current_token
+    elsif @current_token.is_left_bracket?
+      expression
     else
-      Node.new @current_token
+      raise ParserException.new
     end
     next_token
-    #puts node.to_s
     node
   end
 

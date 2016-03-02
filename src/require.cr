@@ -1,0 +1,7 @@
+require "./monkey_patching/*"
+require "./exceptions/simple_compiler_exception"
+require "./exceptions/*"
+require "./token"
+require "./node/*"
+require "./scanner"
+require "./parser"
