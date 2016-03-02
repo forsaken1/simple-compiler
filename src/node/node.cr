@@ -3,6 +3,6 @@ class Node
   end
 
   def to_s
-    "(#{@token.text})"
+    "(#{(@token as Token).text})"
   end
 end

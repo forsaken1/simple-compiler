@@ -60,7 +60,7 @@ class Parser
     node
   end
 
-  private def next_token
+  private def next_token : Token
     @current_token = scanner.next_token
   end
 end
