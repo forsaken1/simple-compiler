@@ -69,7 +69,7 @@ class Scanner
     if is_asterisk?
       until is_slash? && @previous_char == '*'
         next_char
-        raise ScannerException.new("Unexpected end of file").with_info(@line, @pos) if is_eof?
+        raise ScannerException.new("Unexpected end of file", @line, @pos) if is_eof?
       end
     else
       until is_eol? || is_eof?
@@ -91,7 +91,7 @@ class Scanner
     string = ""
     next_char
     until is_string_separator?
-      raise ScannerException.new("Unexpected end of file").with_info(@line, @pos) if is_eof?
+      raise ScannerException.new("Unexpected end of file", @line, @pos) if is_eof?
       string += @current_char
       next_char
     end
@@ -114,10 +114,10 @@ class Scanner
         if is_char_separator?
           next_char
         else
-          raise ScannerException.new("Invalid character constant").with_info(@line, pos)
+          raise ScannerException.new("Invalid character constant", @line, pos)
         end
       else
-        raise ScannerException.new("Invalid ESCAPE-sequence: \"#{char + @current_char}\"").with_info(@line, pos)
+        raise ScannerException.new("Invalid ESCAPE-sequence: \"#{char + @current_char}\"", @line, pos)
       end
     else
       if is_char? # shit
@@ -129,7 +129,7 @@ class Scanner
           # raise
         end
       else
-        raise ScannerException.new("Invalid character constant").with_info(@line, pos)
+        raise ScannerException.new("Invalid character constant", @line, pos)
       end
     end
     Token.new @line, pos, token_type, char
@@ -158,9 +158,9 @@ class Scanner
         next_char
       end
     end
-    raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.text}\"").with_info(@line, pos) if is_letter?
+    raise ScannerException.new("Invalid identificator: \"#{number}#{parse_identificator.text}\"", @line, pos) if is_letter?
     if number.have_dot? || number.have_e?
-      raise ScannerException.new("Invalid real number: \"#{number}\"").with_info(@line, pos) unless number.valid_real_number?
+      raise ScannerException.new("Invalid real number: \"#{number}\"", @line, pos) unless number.valid_real_number?
       Token.new @line, pos, :float, number
     else
       Token.new @line, pos, :integer, number
@@ -184,7 +184,7 @@ class Scanner
   end
 
   private def parse_unknown
-    raise ScannerException.new("Indefinite character: \"#{@current_char}\"").with_info(@line, @pos)
+    raise ScannerException.new("Indefinite character: \"#{@current_char}\"", @line, @pos)
   end
 
 
