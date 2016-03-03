@@ -1,9 +1,7 @@
 class Token
-  def initialize(@line, @pos, @type, @text)
-  end
+  getter text, line, pos
 
-  def text
-    @text
+  def initialize(@line, @pos, @type, @text)
   end
 
   def to_s

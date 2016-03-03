@@ -1,11 +1,9 @@
-
-
 class Scanner
   def initialize(@file_name)
     @tokens = [] of Token
     @file_content = File.read(@file_name) + '\0'
     @iterator, @line, @pos = 0, 1, 1
-    @previous_char, @exception = '\0', nil
+    @previous_char = '\0'
 
     @it_can_be_operation = ["-", "+", "*", "/", "=", "%", "<", ">", "!", "&", "|", "^", "?", ":", "."].map { |op| [op, true] }.to_h
     @operations = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->", "==", ">=", "<=", "!=", "++", "--", ">>", "<<", "||", "&&"].map { |op| [op, true] }.to_h.merge @it_can_be_operation
@@ -20,10 +18,9 @@ class Scanner
     until @tokens.any? && @tokens.last.is_eof?
       @tokens << next_token
     end
-  rescue ex : ScannerException
-    @exception = ex
-  else
     self
+  rescue ex : ScannerException
+    ex
   end
 
   def next_token : Token
@@ -52,11 +49,7 @@ class Scanner
   end
 
   def to_s
-    if @exception
-      @exception.to_s
-    else
-      @tokens.map(&.to_s).join('\n')
-    end
+    @tokens.map(&.to_s).join('\n')
   end
 
 
@@ -86,14 +79,14 @@ class Scanner
     next_char unless is_eof?
   end
 
-  private def parse_separator
+  private def parse_separator : Token
     separator = @current_char.to_s
     pos = @pos
     next_char
     Token.new @line, pos, :separator, separator
   end
 
-  private def parse_string
+  private def parse_string : Token
     pos = @pos
     string = ""
     next_char
@@ -106,7 +99,7 @@ class Scanner
     Token.new @line, pos, :string, string
   end
 
-  private def parse_char # refactoring
+  private def parse_char : Token # refactoring
     pos = @pos
     char = ""
     token_type = :char
@@ -142,7 +135,7 @@ class Scanner
     Token.new @line, pos, token_type, char
   end
 
-  private def parse_operation
+  private def parse_operation : Token
     pos = @pos
     next_char
     operation = @previous_char.to_s + @current_char.to_s
@@ -154,7 +147,7 @@ class Scanner
     end
   end
 
-  private def parse_number # refactoring
+  private def parse_number : Token # refactoring
     number = ""
     pos = @pos
     while is_number? || is_dot? || is_e?
@@ -174,7 +167,7 @@ class Scanner
     end
   end
 
-  private def parse_identificator
+  private def parse_identificator : Token
     identificator = ""
     pos = @pos
     token_type = :identificator
@@ -186,7 +179,7 @@ class Scanner
     Token.new @line, pos, token_type, identificator
   end
 
-  private def parse_eof
+  private def parse_eof : Token
     Token.new @line, @pos, :eof, "End of file"
   end
 

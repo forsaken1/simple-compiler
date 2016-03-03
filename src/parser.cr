@@ -1,7 +1,4 @@
-
-
 class Parser
-
   private property scanner
 
   def initialize(@scanner : Scanner)
@@ -9,9 +6,12 @@ class Parser
     @ast = uninitialized Node # abstract syntax tree
   end
 
-  def run : Node
+  def run
     next_token
     @ast = expression_statement
+    self
+  rescue ex : SimpleCompilerException
+    ex
   end
 
   def to_s
@@ -22,6 +22,8 @@ class Parser
     expr = expression
     if @current_token.is_semicolon?
       next_token
+    else
+      raise ParserException.new "Expression without ';'", @current_token
     end
     NodeStatement.new expr
   end
@@ -50,9 +52,10 @@ class Parser
     elsif @current_token.is_string?
       NodeString.new @current_token
     elsif @current_token.is_left_bracket?
+      next_token
       expression
     else
-      raise ParserException.new
+      raise ParserException.new "", @current_token
     end
     next_token
     node
