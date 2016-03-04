@@ -43,8 +43,8 @@ cast-expression
     ( type-name ) cast-expression
   
 xchange-expression
-  cast-expression
-  xchange-expression <> cast-expression
+    cast-expression
+    xchange-expression <> cast-expression
 
 multiplicative-expression
     xchange-expression
