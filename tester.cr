@@ -15,6 +15,8 @@ class Tester
     scanner_tests
     parser_tests
     print_info
+  rescue ex : Exception
+    puts ex.message
   end
 
   private def run_tests(range, directory)
@@ -41,7 +43,7 @@ class Tester
   end
 
   private def parser_tests
-    run_tests 1..8, PARSER_TESTS_DIR do |file|
+    run_tests 1..9, PARSER_TESTS_DIR do |file|
       `./simple-compiler -p #{file}`
     end
   end
@@ -62,7 +64,10 @@ class Tester
   end
 
   private def build_compiler
-    `crystal build simple-compiler.cr`
+    build_info = `crystal build simple-compiler.cr`
+    if build_info != ""
+      raise Exception.new build_info
+    end
   end
 end
 

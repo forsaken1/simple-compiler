@@ -64,6 +64,10 @@ class Token
     is_separator? && @text == "("
   end
 
+  def is_right_bracket?
+    is_separator? && @text == ")"
+  end
+
   def is_semicolon?
     is_separator? && @text == ";"
   end

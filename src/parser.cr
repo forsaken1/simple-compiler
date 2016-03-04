@@ -76,9 +76,13 @@ class Parser
       NodeString.new @current_token
     elsif @current_token.is_left_bracket?
       next_token
-      expression
+      expr = expression
+      unless @current_token.is_right_bracket?
+        raise ParserException.new "Unexpected token '#{@current_token.text}', expected ')'", @current_token
+      end
+      expr
     else
-      raise ParserException.new "", @current_token
+      raise ParserException.new "Unexpected token '#{@current_token.text}'", @current_token
     end
     next_token
     node
