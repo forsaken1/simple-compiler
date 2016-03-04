@@ -2,7 +2,7 @@
 
 Rewrite my old compiler https://github.com/forsaken1/compiler
 
-Grammar: C lang (cutted)
+Grammar: C lang (cutted), based on https://www.lysator.liu.se/c/ANSI-C-grammar-y.html
 
 Status: syntax analysis
 
