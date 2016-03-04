@@ -42,7 +42,19 @@ class Token
     @type == :float
   end
 
+  def is_operation?
+    @type == :operation
+  end
+
   # Checkers
+
+  def is_increment?
+    is_operation? && @text == "++"
+  end
+
+  def is_decrement?
+    is_operation? && @text == "--"
+  end
 
   def is_constant?
     is_char? || is_escape? || is_integer? || is_float?

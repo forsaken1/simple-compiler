@@ -2,13 +2,14 @@ class Parser
   private property scanner
 
   def initialize(@scanner : Scanner)
+    @previous_token = uninitialized Token
     @current_token = uninitialized Token
     @ast = uninitialized Node # abstract syntax tree
   end
 
   def run
     next_token
-    @ast = expression_statement
+    @ast = program
     self
   rescue ex : SimpleCompilerException
     ex
@@ -16,6 +17,20 @@ class Parser
 
   def to_s
     @ast.to_s
+  end
+
+
+
+  def program : Node
+    external_declaration
+  end
+
+  def external_declaration : Node
+    statement_list
+  end
+
+  def statement_list : NodeStatement
+    expression_statement
   end
 
   private def expression_statement : NodeStatement
@@ -30,18 +45,26 @@ class Parser
 
   private def expression(n = 0) : Node
     return unary_expression if n > 14
-    #case n of
-    #when 0: 
-    #end
     expression n + 1
   end
 
   private def unary_expression : Node
-    postfix_expression
+    if @current_token.is_increment? || @current_token.is_decrement?
+      next_token
+      NodeUnary.new @previous_token, unary_expression
+    else
+      postfix_expression
+    end
   end
 
   private def postfix_expression : Node
-    primary_expression
+    expr = primary_expression
+    if @current_token.is_increment? || @current_token.is_decrement?
+      next_token
+      NodeUnary.new @previous_token, expr
+    else
+      expr
+    end
   end
 
   private def primary_expression : Node
@@ -62,6 +85,7 @@ class Parser
   end
 
   private def next_token : Token
+    @previous_token = @current_token
     @current_token = scanner.next_token
   end
 end
