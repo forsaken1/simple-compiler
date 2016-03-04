@@ -1,4 +1,19 @@
 1	1	keyword		int
 1	5	keyword		char
 2	1	keyword		for
-2	4	eof		End of file
+3	1	keyword		continue
+3	10	keyword		break
+3	16	keyword		do
+4	1	keyword		else
+4	12	keyword		float
+5	1	keyword		goto
+5	6	keyword		if
+6	1	keyword		return
+6	16	keyword		sizeof
+7	1	keyword		struct
+8	1	keyword		void
+9	1	keyword		while
+10	1	keyword		printf
+11	1	keyword		scanf
+12	1	keyword		label
+12	6	eof		End of file

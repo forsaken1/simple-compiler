@@ -9,7 +9,7 @@ class Scanner
     @operations = ["+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "->", "==", ">=", "<=", "!=", "++", "--", ">>", "<<", "||", "&&"].map { |op| [op, true] }.to_h.merge @it_can_be_operation
     @escapes = ["n", "t", "v", "b", "a", "r", "f", "'", "\"", "\\", "?"].map { |e| [e, true] }.to_h
     @separators = ["(", ")", "[", "]", "{", "}", ";", ","].map { |s| [s, true] }.to_h
-    @keywords = ["int", "char", "for", "return", "while"].map { |k| [k, true] }.to_h
+    @keywords = ["int", "char", "for", "return", "while", "continue", "break", "do", "else", "float", "goto", "if", "sizeof", "struct", "void", "printf", "scanf", "label"].map { |k| [k, true] }.to_h
 
     @current_char = @file_content[@iterator]
   end
