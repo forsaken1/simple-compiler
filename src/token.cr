@@ -48,6 +48,14 @@ class Token
 
   # Checkers
 
+  def is_left_square_bracket?
+    is_separator? && @text == "["
+  end
+
+  def is_right_square_bracket?
+    is_separator? && @text == "]"
+  end
+
   def is_increment?
     is_operation? && @text == "++"
   end

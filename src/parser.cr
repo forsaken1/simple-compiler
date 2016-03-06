@@ -58,12 +58,21 @@ class Parser
   end
 
   private def postfix_expression : Node
-    expr = primary_expression
+    left_expr = primary_expression
     if @current_token.is_increment? || @current_token.is_decrement?
       next_token
-      NodeUnary.new @previous_token, expr
+      NodeUnary.new @previous_token, left_expr
+    elsif @current_token.is_left_square_bracket?
+      operation = @current_token
+      next_token
+      right_expr = expression
+      unless @current_token.is_right_square_bracket?
+        raise ParserException.new "Unexpected token '#{@current_token.text}', expected ']'", @current_token
+      end
+      next_token
+      NodeBinary.new left_expr, operation, right_expr
     else
-      expr
+      left_expr
     end
   end
 
