@@ -52,6 +52,10 @@ class Token
 
   # Checkers
 
+  def is_arrow?
+    is_operation? && @text == "->"
+  end
+
   def is_point?
     is_operation? && @text == "."
   end

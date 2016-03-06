@@ -71,7 +71,7 @@ class Parser
       end
       next_token
       NodeBinary.new left_expr, operation, right_expr
-    elsif @current_token.is_point?
+    elsif @current_token.is_point? || @current_token.is_arrow?
       operation = @current_token
       next_token
       if @current_token.is_identificator?
