@@ -1,5 +1,6 @@
 class Parser
   private property scanner
+  private getter   current_token
 
   def initialize(@scanner : Scanner)
     @previous_token = uninitialized Token
@@ -35,7 +36,7 @@ class Parser
 
   private def expression_statement : NodeStatement
     expr = expression
-    if @current_token.is_semicolon?
+    if current_token.is_semicolon?
       next_token
     else
       raise ParserException.new "Expression without ';'", @current_token
@@ -49,7 +50,7 @@ class Parser
   end
 
   private def unary_expression : Node
-    if @current_token.is_increment? || @current_token.is_decrement?
+    if current_token.is_increment? || current_token.is_decrement?
       next_token
       NodeUnary.new @previous_token, unary_expression
     else
@@ -59,25 +60,25 @@ class Parser
 
   private def postfix_expression : Node
     left_expr = primary_expression
-    if @current_token.is_increment? || @current_token.is_decrement?
+    if current_token.is_increment? || current_token.is_decrement?
       next_token
       NodeUnary.new @previous_token, left_expr
-    elsif @current_token.is_left_square_bracket?
+    elsif current_token.is_left_square_bracket?
       operation = @current_token
       next_token
       right_expr = expression
-      unless @current_token.is_right_square_bracket?
-        raise ParserException.new "Unexpected token '#{@current_token.text}', expected ']'", @current_token
+      unless current_token.is_right_square_bracket?
+        raise ParserException.new "Unexpected token '#{current_token.text}', expected ']'", @current_token
       end
       next_token
       NodeBinary.new left_expr, operation, right_expr
-    elsif @current_token.is_point? || @current_token.is_arrow?
+    elsif current_token.is_point? || current_token.is_arrow?
       operation = @current_token
       next_token
-      if @current_token.is_identificator?
+      if current_token.is_identificator?
         right_expr = NodeIdentificator.new @current_token
       else
-        raise ParserException.new "Unexpected token type '#{@current_token.type}', expected 'identificator'", @current_token
+        raise ParserException.new "Unexpected token type '#{current_token.type}', expected 'identificator'", @current_token
       end
       next_token
       NodeBinary.new left_expr, operation, right_expr
@@ -87,21 +88,21 @@ class Parser
   end
 
   private def primary_expression : Node
-    node = if @current_token.is_identificator?
+    node = if current_token.is_identificator?
       NodeIdentificator.new @current_token
-    elsif @current_token.is_constant?
+    elsif current_token.is_constant?
       NodeConstant.new @current_token
-    elsif @current_token.is_string?
+    elsif current_token.is_string?
       NodeString.new @current_token
-    elsif @current_token.is_left_bracket?
+    elsif current_token.is_left_bracket?
       next_token
       expr = expression
-      unless @current_token.is_right_bracket?
-        raise ParserException.new "Unexpected token '#{@current_token.text}', expected ')'", @current_token
+      unless current_token.is_right_bracket?
+        raise ParserException.new "Unexpected token '#{current_token.text}', expected ')'", @current_token
       end
       expr
     else
-      raise ParserException.new "Unexpected token '#{@current_token.text}'", @current_token
+      raise ParserException.new "Unexpected token '#{current_token.text}'", @current_token
     end
     next_token
     node
