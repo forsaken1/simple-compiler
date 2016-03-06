@@ -1,7 +1,8 @@
 class Token
-  getter text, type, line, pos
+  getter text, type, line, pos, unary_operators
 
   def initialize(@line, @pos, @type, @text)
+    @unary_operators = ["&", "*", "+", "-", "~", "!"].map { |e| [e, true] }.to_h
   end
 
   def to_s
@@ -51,6 +52,10 @@ class Token
   end
 
   # Checkers
+
+  def is_unary_operator?
+    is_operation? && unary_operators[@text]?
+  end
 
   def is_arrow?
     is_operation? && @text == "->"

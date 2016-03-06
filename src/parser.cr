@@ -50,7 +50,7 @@ class Parser
   end
 
   private def unary_expression : Node
-    if current_token.is_increment? || current_token.is_decrement?
+    if current_token.is_increment? || current_token.is_decrement? || current_token.is_unary_operator?
       next_token
       NodeUnary.new @previous_token, unary_expression
     else
