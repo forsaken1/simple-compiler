@@ -1,5 +1,5 @@
 class Token
-  getter text, line, pos
+  getter text, type, line, pos
 
   def initialize(@line, @pos, @type, @text)
   end
@@ -12,6 +12,10 @@ class Token
 
   def is_eof?
     @type == :eof
+  end
+
+  def is_keyword?
+    @type == :keyword
   end
 
   def is_identificator?
@@ -47,6 +51,10 @@ class Token
   end
 
   # Checkers
+
+  def is_point?
+    is_operation? && @text == "."
+  end
 
   def is_left_square_bracket?
     is_separator? && @text == "["

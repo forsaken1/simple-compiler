@@ -71,6 +71,16 @@ class Parser
       end
       next_token
       NodeBinary.new left_expr, operation, right_expr
+    elsif @current_token.is_point?
+      operation = @current_token
+      next_token
+      if @current_token.is_identificator?
+        right_expr = NodeIdentificator.new @current_token
+      else
+        raise ParserException.new "Unexpected token type '#{@current_token.type}', expected 'identificator'", @current_token
+      end
+      next_token
+      NodeBinary.new left_expr, operation, right_expr
     else
       left_expr
     end
