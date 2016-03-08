@@ -45,8 +45,29 @@ class Parser
     NodeStatement.new expr
   end
 
-  private def expression(n = 0) : Node
-    return cast_expression if n > 14
+  private def expression : Node
+    left_expr = assignment_expression
+    if current_token.is_comma?
+      operation = current_token
+      next_token!
+      right_expr = expression
+      NodeBinary.new left_expr, operation, right_expr
+    else
+      left_expr
+    end
+  end
+
+  private def assignment_expression : Node
+    conditional_expression
+  end
+
+  private def conditional_expression : Node
+    binary_expression
+  end
+
+  private def binary_expression(n = 0) : Node
+    return cast_expression if n > 10
+    left_expr = 
     expression n + 1
   end
 

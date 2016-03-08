@@ -62,6 +62,10 @@ class Token
     is_operation? && unary_operator[@text]?
   end
 
+  def is_comma?
+    is_separator? && @text == ","
+  end
+
   def is_arrow?
     is_operation? && @text == "->"
   end
