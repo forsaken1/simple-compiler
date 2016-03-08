@@ -65,10 +65,19 @@ class Parser
     binary_expression
   end
 
-  private def binary_expression(n = 0) : Node
-    return cast_expression if n > 10
-    left_expr = 
-    expression n + 1
+  private def binary_expression(priority = 0) : Node
+    return cast_expression if priority > 10
+    left_expr = binary_expression priority + 1
+    delete_left_recursion priority, left_expr
+  end
+
+  private def delete_left_recursion(priority : Int32, left_expr : Node)
+    return left_expr unless current_token.is_binary_operation?
+    operation = current_token
+    next_token!
+    right_expr = binary_expression priority + 1
+    raise ParserException.new("Binary expression without right operand", current_token) if right_expr.nil?
+    delete_left_recursion priority, NodeBinary.new(left_expr, operation, right_expr)
   end
 
   private def cast_expression : Node
@@ -140,7 +149,8 @@ class Parser
       end
       expr
     else
-      raise ParserException.new "Unexpected token '#{current_token.text}'", current_token
+      Node.new
+      #raise ParserException.new "Unexpected token '#{current_token.text}'", current_token
     end
     next_token!
     node
