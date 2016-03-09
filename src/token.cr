@@ -3,7 +3,7 @@ class Token
 
   def initialize(@line, @pos, @type, @text)
     @unary_operator = ["&", "*", "+", "-", "~", "!"].map { |e| [e, true] }.to_h
-    @binary_operator = ["||", "&&", "|", "^", "&", "==", "!=", "<", ">", "<=", ">=", ">>", "<<", "+", "-", "*", "/", "%", "<>"].map { |e| [e, true] }.to_h
+    @binary_operator = ["||", "&&", "|", "^", "&", "==", "!=", "<", ">", "<=", ">=", ">>", "<<", "*=", "/=", "+=", "-=", "+", "-", "*", "/", "%", "<>"].map { |e| [e, true] }.to_h
     @type_name = ["char", "int", "float", "void"].map { |e| [e, true] }.to_h
   end
 
