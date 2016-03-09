@@ -43,7 +43,7 @@ class Tester
   end
 
   private def parser_tests
-    run_tests 1..27, PARSER_TESTS_DIR do |file|
+    run_tests 1..28, PARSER_TESTS_DIR do |file|
       `./simple-compiler -p #{file}`
     end
   end
