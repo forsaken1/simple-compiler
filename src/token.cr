@@ -1,9 +1,10 @@
 class Token
-  getter text, type, line, pos, unary_operator, binary_operator, type_name
+  getter text, type, line, pos, unary_operator, binary_operator, assignment_operator, type_name
 
   def initialize(@line, @pos, @type, @text)
     @unary_operator = ["&", "*", "+", "-", "~", "!"].map { |e| [e, true] }.to_h
-    @binary_operator = ["||", "&&", "|", "^", "&", "==", "!=", "<", ">", "<=", ">=", ">>", "<<", "*=", "/=", "+=", "-=", "+", "-", "*", "/", "%", "<>"].map { |e| [e, true] }.to_h
+    @assignment_operator = ["*=", "/=", "+=", "-=", "%=", "&=", "^=", "|=", "="].map { |e| [e, true] }.to_h
+    @binary_operator = ["||", "&&", "|", "^", "&", "<", ">", ">>", "<<", "==", "!=", "<=", ">=", "+", "-", "*", "/", "%", "<>"].map { |e| [e, true] }.to_h
     @type_name = ["char", "int", "float", "void"].map { |e| [e, true] }.to_h
   end
 
@@ -65,6 +66,10 @@ class Token
 
   def is_unary_operator?
     is_operation? && unary_operator[@text]?
+  end
+
+  def is_assignment_operator?
+    is_operation? && assignment_operator[@text]?
   end
 
   def is_question?

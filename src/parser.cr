@@ -58,7 +58,18 @@ class Parser
   end
 
   private def assignment_expression : Node
-    conditional_expression
+    left_expr = conditional_expression
+    right_expr = uninitialized Node
+    operation = uninitialized Token
+    if current_token.is_assignment_operator?
+      operation = current_token
+      next_token!
+      right_expr = assignment_expression
+      raise ParserException.new("Assignment expression without right operand", current_token) if right_expr.nil?
+      NodeBinary.new left_expr, operation, right_expr
+    else
+      left_expr
+    end
   end
 
   private def conditional_expression : Node
