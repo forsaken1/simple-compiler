@@ -67,6 +67,10 @@ class Token
     is_operation? && unary_operator[@text]?
   end
 
+  def is_question?
+    is_operation? && @text == "?"
+  end
+
   def is_comma?
     is_separator? && @text == ","
   end
@@ -105,6 +109,10 @@ class Token
 
   def is_right_bracket?
     is_separator? && @text == ")"
+  end
+
+  def is_colon?
+    is_operation? && @text == ":"
   end
 
   def is_semicolon?

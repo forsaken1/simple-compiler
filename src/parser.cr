@@ -62,7 +62,20 @@ class Parser
   end
 
   private def conditional_expression : Node
-    binary_expression
+    condition = binary_expression
+    if current_token.is_question?
+      next_token!
+      if_true = expression
+      if current_token.is_colon?
+        next_token!
+        if_false = conditional_expression
+      else
+        raise ParserException.new "Unexpected token '#{current_token.text}', expected ':'", current_token
+      end
+      NodeIf.new condition, if_true, if_false
+    else
+      condition
+    end
   end
 
   private def binary_expression(priority = 0) : Node
