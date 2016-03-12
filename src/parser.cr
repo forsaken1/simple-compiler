@@ -18,7 +18,7 @@ class Parser
   end
 
   def to_s
-    @ast.to_s
+    @ast.to_s(0, true)
   end
 
 
