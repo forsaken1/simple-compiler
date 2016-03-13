@@ -6,6 +6,6 @@ class NodeStatement < Node
   end
 
   def to_s(level = 0, have_link = false)
-    @first.to_s level + 1, true
+    @first.to_s level, true
   end
 end

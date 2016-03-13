@@ -18,10 +18,10 @@ class Node
     link = have_link ? "|   " : "    "
     i, j = level <= 0 ? 0 : level - 1, level - 1
     (0...j).concat { "    " } +
-    (i...j).concat { link } +
+    (i..j).concat { link } +
     "|\n" +
     (0...j).concat { "    " } +
-    (i...j).concat { link } +
+    (i..j).concat { link } +
     "+---"
   end
 end
